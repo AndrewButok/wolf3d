@@ -6,13 +6,39 @@
 /*   By: abutok <abutok@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/03 20:23:56 by abutok            #+#    #+#             */
-/*   Updated: 2019/05/04 22:51:12 by abutok           ###   ########.fr       */
+/*   Updated: 2019/05/06 16:54:10 by abutok           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "wolf3d.h"
 
-void 	view_init(t_view **view_ptr)
+void 		level_init(char *level_name, t_view *view)
+{
+	int		x;
+	int		y;
+	char	*start_ptr;
+
+	view->map = get_map(level_name);
+	if (view->map == NULL)
+		return ;
+	y = 0;
+	while (!(start_ptr = ft_strchr(view->map[y], MAP_START)))
+		y++;
+	if (start_ptr != NULL)
+		x = (start_ptr - view->map[y]) / sizeof(char);
+	else
+	{
+		x = 0;
+		y = 0;
+	}
+	view->player = (t_player*)malloc(sizeof(t_player));
+	view->player->x = x;
+	view->player->y = y;
+	view->player->direction = 0;
+	printf("Player's x: %f\nPlayer's y: %f\n", view->player->x, view->player->y);
+}
+
+static void	view_init(t_view **view_ptr)
 {
 	t_view		*view;
 
@@ -27,11 +53,12 @@ void 	view_init(t_view **view_ptr)
 	view->window = SDL_CreateWindow("wolf3d", SDL_WINDOWPOS_CENTERED,
 		SDL_WINDOWPOS_CENTERED, WIN_WIDTH, WIN_HEIGHT, 0);
 	view->surface = SDL_GetWindowSurface(view->window);
+	level_init("test.map", view);
 }
 
-int		main(void)
+int			main(void)
 {
-	t_view 		*view;
+	t_view		*view;
 	SDL_Event	event_iterator;
 	int			exit_flag;
 
@@ -47,7 +74,7 @@ int		main(void)
 				event_iterator.key.keysym.sym == SDLK_ESCAPE) ||
 				(event_iterator.type == SDL_WINDOWEVENT &&
 					event_iterator.window.event == SDL_WINDOWEVENT_CLOSE))
-					exit_flag = 1;
+				exit_flag = 1;
 			else if (event_iterator.type == SDL_WINDOWEVENT_EXPOSED)
 				SDL_UpdateWindowSurface(view->window);
 	}
