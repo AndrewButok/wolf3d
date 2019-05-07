@@ -6,7 +6,7 @@
 /*   By: abutok <abutok@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/10/27 12:00:01 by abutok            #+#    #+#             */
-/*   Updated: 2017/10/27 12:52:57 by abutok           ###   ########.fr       */
+/*   Updated: 2019/05/07 16:07:40 by abutok           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ char	*ft_strchr(const char *s, int c)
 	char	ch;
 
 	ch = (char)c;
-	while (*s != ch && *s)
+	while (*s && *s != ch)
 		s++;
 	if (*s == ch)
 		return ((char*)s);

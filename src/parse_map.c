@@ -6,82 +6,76 @@
 /*   By: abutok <abutok@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/06 11:16:37 by abutok            #+#    #+#             */
-/*   Updated: 2019/05/06 16:55:57 by abutok           ###   ########.fr       */
+/*   Updated: 2019/05/07 16:13:51 by abutok           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "wolf3d.h"
 #include <fcntl.h>
 
-static void		del_lst_row(void *str, size_t size)
+static int	is_valid_map(const t_list *list)
 {
-	free(str);
-	return ;
-	size = 0;
-}
+	size_t	length;
+	int		i = 0;
 
-static size_t	list_len(const t_list *lst)
-{
-	size_t c;
-
-	c = 0;
-	while (lst != NULL && lst->content_size != 0)
+	if (list == NULL)
+		return (0);
+	length = list->content_size;
+	while (list != NULL)
 	{
-		c++;
-		lst = lst->next;
-	}
-	return (c);
-}
-
-static int		check_map(const t_list *lst)
-{
-	while (lst != NULL)
-	{
-		if (lst->next != NULL && lst->content_size != lst->next->content_size)
+		if (list->content_size != length)
 			return (0);
-		lst = lst->next;
+		i++;
+		list = list->next;
 	}
-	return (1);
+	return (i);
 }
 
-static char		**make_map(const t_list *lst)
+static void	do_nothing(void *u1, size_t u2)
 {
-	char	**map;
-	char	**map_iter;
-	int		maxy;
+	u1 = NULL;
+	u2 = 0;
+}
 
-	map = NULL;
-	if ((maxy = list_len(lst)) == 0 && check_map(lst) == 0)
-		return (NULL);
-	map = (char**)ft_memalloc(sizeof(char*) * maxy + 1);
-	map_iter = map;
-	while (lst != NULL && map_iter != NULL)
+static char	**convert_map(t_list **list, size_t *h, size_t *w)
+{
+	t_list	*iterator;
+	char	**map;
+	int		i;
+
+	if ((*h = is_valid_map(*list)) == 0)
 	{
-		*map_iter = ft_strdup((char*)lst->content);
-		map_iter++;
-		lst = lst->next;
+		ft_lstdel(list, &do_nothing);
+		return (NULL);
 	}
-	*map_iter = NULL;
+	map = (char**)malloc(sizeof(char*) * (*h));
+	iterator = *list;
+	*w = iterator->content_size - 1;
+	i = 0;
+	while (iterator != NULL)
+	{
+		map[(*h) - i - 1] = (char*)iterator->content;
+		i++;
+		iterator = iterator->next;
+	}
 	return (map);
 }
 
-char			**get_map(char *filename)
+char		**get_map(const char *filename, size_t *h, size_t *w)
 {
+	t_list	*list;
+	char	*buf;
+	size_t	i;
 	int		map_fd;
-	t_list	*lst;
-	char	*row;
-	char	**map;
 
 	map_fd = open(filename, O_RDONLY);
-	row = NULL;
-	lst = NULL;
-	while (get_next_line(map_fd, &row) > 0)
+	i = 0;
+	list = NULL;
+	while (get_next_line(map_fd, &buf))
 	{
-		ft_lstadd(&lst, ft_lstnew(row, ft_strlen(row) + 1));
-		free(row);
+		ft_lstadd(&list, ft_lstnew(buf, ft_strlen(buf) + 1));
+		free(buf);
 	}
-	free(row);
-	map = make_map(lst);
-	ft_lstdel(&lst, &del_lst_row);
-	return (map);
+	close(map_fd);
+	return (convert_map(&list, h, w));
 }

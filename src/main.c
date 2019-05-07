@@ -6,7 +6,7 @@
 /*   By: abutok <abutok@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/03 20:23:56 by abutok            #+#    #+#             */
-/*   Updated: 2019/05/06 16:54:10 by abutok           ###   ########.fr       */
+/*   Updated: 2019/05/07 16:11:25 by abutok           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,18 +18,19 @@ void 		level_init(char *level_name, t_view *view)
 	int		y;
 	char	*start_ptr;
 
-	view->map = get_map(level_name);
+	view->map = get_map(level_name, &(view->map_height), &(view->map_width));
 	if (view->map == NULL)
 		return ;
-	y = 0;
-	while (!(start_ptr = ft_strchr(view->map[y], MAP_START)))
-		y++;
+	y = -1;
+	while (++y < (int)view->map_height)
+		if ((start_ptr = ft_strchr(view->map[y], MAP_START)) != NULL)
+			break ;
 	if (start_ptr != NULL)
 		x = (start_ptr - view->map[y]) / sizeof(char);
 	else
 	{
-		x = 0;
-		y = 0;
+		x = -1;
+		y = -1;
 	}
 	view->player = (t_player*)malloc(sizeof(t_player));
 	view->player->x = x;

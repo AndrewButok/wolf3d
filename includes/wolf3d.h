@@ -6,7 +6,7 @@
 /*   By: abutok <abutok@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/03 20:24:44 by abutok            #+#    #+#             */
-/*   Updated: 2019/05/06 16:19:07 by abutok           ###   ########.fr       */
+/*   Updated: 2019/05/07 15:31:40 by abutok           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,10 +54,13 @@ typedef struct				s_view
 	SDL_Window			*window;
 	SDL_Surface			*surface;
 	char				**map;
+	size_t				map_height;
+	size_t				map_width;
 	t_player			*player;
 	t_texture			*texture;
 }							t_view;
 
-char						**get_map(char *name);
+char						**get_map(const char *filename, size_t *h,
+	size_t *w);
 
 #endif
