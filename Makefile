@@ -6,7 +6,7 @@
 #    By: abutok <abutok@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/05/03 19:52:20 by abutok            #+#    #+#              #
-#    Updated: 2019/05/06 16:06:06 by abutok           ###   ########.fr        #
+#    Updated: 2019/05/13 14:21:51 by abutok           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,7 @@ LINKLIB = -framework OpenGL -framework AppKit /Library/Frameworks/SDL2.framework
 #	Sources directoried
 SRCDIR = ./src/
 #	Source files
-SRCFILES = main.c parse_map.c
+SRCFILES = main.c parse_map.c draw_surface.c
 #	Headers
 INCLUDE = ./includes
 #	Binaries folder

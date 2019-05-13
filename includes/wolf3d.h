@@ -6,7 +6,7 @@
 /*   By: abutok <abutok@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/03 20:24:44 by abutok            #+#    #+#             */
-/*   Updated: 2019/05/12 21:35:50 by abutok           ###   ########.fr       */
+/*   Updated: 2019/05/13 16:09:10 by abutok           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define WOLF3D_H
 # include "libft.h"
 # include "get_next_line.h"
+# include <math.h>
 # include <SDL.h>
 
 /*
@@ -30,6 +31,14 @@
 # define MAP_PLAIN ' '
 # define MAP_START 'S'
 
+/*
+**	Directions
+*/
+#define DIRECTION_NORTH 'N'
+#define DIRECTION_SOUTH 'S'
+#define DIRECTION_WEST 'W'
+#define DIRECTION_EAST 'E'
+
 enum						e_sector
 {
 	Wall = -1,
@@ -44,9 +53,9 @@ typedef struct				s_texture
 
 typedef struct				s_player
 {
-	float				x;
-	float				y;
-	float				direction;
+	double				x;
+	double				y;
+	double				d;
 }							t_player;
 
 typedef struct				s_view
@@ -63,5 +72,7 @@ typedef struct				s_view
 char						**get_map(const char *filename, size_t *h,
 	size_t *w);
 void						update_surface(t_view *view);
+int							check_map_intersection(t_view *view,
+	t_player *player, t_player *rit);
 
 #endif

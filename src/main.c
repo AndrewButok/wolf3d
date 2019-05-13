@@ -6,13 +6,13 @@
 /*   By: abutok <abutok@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/03 20:23:56 by abutok            #+#    #+#             */
-/*   Updated: 2019/05/12 18:37:25 by abutok           ###   ########.fr       */
+/*   Updated: 2019/05/13 12:32:21 by abutok           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "wolf3d.h"
 
-void 		level_init(char *level_name, t_view *view)
+void		level_init(char *level_name, t_view *view)
 {
 	int		x;
 	int		y;
@@ -33,13 +33,9 @@ void 		level_init(char *level_name, t_view *view)
 		y = -1;
 	}
 	view->player = (t_player*)malloc(sizeof(t_player));
-	view->player->x = (float)x + 0.5f;
-	view->player->y = (float)y + 0.5f;
-	view->player->direction = 0;
-	// printf("Player x: %.2f\n"
-	// 		"Player y: %.2f\n"
-	// 		"Player direction angle: %.2f\n",
-	// 		view->player->x, view->player->y, view->player->direction);
+	view->player->x = (double)x + 0.5;
+	view->player->y = (double)y + 0.5;
+	view->player->d = 0;
 }
 
 static void	view_init(t_view **view_ptr)

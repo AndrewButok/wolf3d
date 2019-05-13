@@ -6,7 +6,7 @@
 /*   By: abutok <abutok@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/06 11:16:37 by abutok            #+#    #+#             */
-/*   Updated: 2019/05/07 16:13:51 by abutok           ###   ########.fr       */
+/*   Updated: 2019/05/13 10:32:27 by abutok           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,12 @@
 static int	is_valid_map(const t_list *list)
 {
 	size_t	length;
-	int		i = 0;
+	int		i;
 
 	if (list == NULL)
 		return (0);
 	length = list->content_size;
+	i = 0;
 	while (list != NULL)
 	{
 		if (list->content_size != length)
