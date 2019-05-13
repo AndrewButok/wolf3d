@@ -6,7 +6,7 @@
 /*   By: abutok <abutok@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/03 20:23:56 by abutok            #+#    #+#             */
-/*   Updated: 2019/05/07 16:11:25 by abutok           ###   ########.fr       */
+/*   Updated: 2019/05/12 18:37:25 by abutok           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,10 +33,13 @@ void 		level_init(char *level_name, t_view *view)
 		y = -1;
 	}
 	view->player = (t_player*)malloc(sizeof(t_player));
-	view->player->x = x;
-	view->player->y = y;
+	view->player->x = (float)x + 0.5f;
+	view->player->y = (float)y + 0.5f;
 	view->player->direction = 0;
-	printf("Player's x: %f\nPlayer's y: %f\n", view->player->x, view->player->y);
+	// printf("Player x: %.2f\n"
+	// 		"Player y: %.2f\n"
+	// 		"Player direction angle: %.2f\n",
+	// 		view->player->x, view->player->y, view->player->direction);
 }
 
 static void	view_init(t_view **view_ptr)
@@ -71,13 +74,15 @@ int			main(void)
 	while (!exit_flag)
 	{
 		while (SDL_PollEvent(&event_iterator))
+		{
 			if ((event_iterator.type == SDL_KEYDOWN &&
 				event_iterator.key.keysym.sym == SDLK_ESCAPE) ||
 				(event_iterator.type == SDL_WINDOWEVENT &&
 					event_iterator.window.event == SDL_WINDOWEVENT_CLOSE))
 				exit_flag = 1;
-			else if (event_iterator.type == SDL_WINDOWEVENT_EXPOSED)
-				SDL_UpdateWindowSurface(view->window);
+			update_surface(view);
+			SDL_UpdateWindowSurface(view->window);
+		}
 	}
 	return (0);
 }

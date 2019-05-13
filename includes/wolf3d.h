@@ -6,7 +6,7 @@
 /*   By: abutok <abutok@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/03 20:24:44 by abutok            #+#    #+#             */
-/*   Updated: 2019/05/07 15:31:40 by abutok           ###   ########.fr       */
+/*   Updated: 2019/05/12 21:35:50 by abutok           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,5 +62,6 @@ typedef struct				s_view
 
 char						**get_map(const char *filename, size_t *h,
 	size_t *w);
+void						update_surface(t_view *view);
 
 #endif
