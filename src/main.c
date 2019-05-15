@@ -6,7 +6,7 @@
 /*   By: abutok <abutok@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/03 20:23:56 by abutok            #+#    #+#             */
-/*   Updated: 2019/05/13 12:32:21 by abutok           ###   ########.fr       */
+/*   Updated: 2019/05/14 12:42:57 by abutok           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void		level_init(char *level_name, t_view *view)
 	view->player = (t_player*)malloc(sizeof(t_player));
 	view->player->x = (double)x + 0.5;
 	view->player->y = (double)y + 0.5;
-	view->player->d = 0;
+	view->player->d = M_PI_2;
 }
 
 static void	view_init(t_view **view_ptr)
@@ -76,7 +76,11 @@ int			main(void)
 				(event_iterator.type == SDL_WINDOWEVENT &&
 					event_iterator.window.event == SDL_WINDOWEVENT_CLOSE))
 				exit_flag = 1;
-			update_surface(view);
+			view->player->d += event_iterator.type != SDL_KEYDOWN ? 0 :
+					(event_iterator.key.keysym.sym == SDLK_d ? 0.017 :
+					 (event_iterator.key.keysym.sym == SDLK_a ? -0.017 : 0));
+			//printf("%lf\n", view->player->d);
+			draw_surface(view);
 			SDL_UpdateWindowSurface(view->window);
 		}
 	}

@@ -66,11 +66,9 @@ char		**get_map(const char *filename, size_t *h, size_t *w)
 {
 	t_list	*list;
 	char	*buf;
-	size_t	i;
 	int		map_fd;
 
 	map_fd = open(filename, O_RDONLY);
-	i = 0;
 	list = NULL;
 	while (get_next_line(map_fd, &buf))
 	{

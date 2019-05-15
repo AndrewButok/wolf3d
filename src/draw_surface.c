@@ -6,61 +6,47 @@
 /*   By: abutok <abutok@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/05/12 21:37:18 by abutok            #+#    #+#             */
-/*   Updated: 2019/05/13 16:09:55 by abutok           ###   ########.fr       */
+/*   Updated: 2019/05/14 13:15:08 by abutok           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "wolf3d.h"
 
-static void		step(t_player *position, int angle)
+static void		draw_column(t_view *view, int wall_h, int column)
 {
-	t_player	buf[2];
-	double		dx;
-	double		dy;
+	int		not_draw;
+	int		i;
+	int		*pixels;
 
-	buf[0].x = sin(angle) > 0 ? ceil(position->x) : floor(position->x);
-	buf[0].y = position->y + (sin(angle) > 0 ?
-		(position->x - floor(position->x)) :
-		(ceil(position->x) - position->x)) * tan(angle);
-	buf[0].d = sqrt(pow(buf[0].x + position.x, 2) +
-		pow(buf[0].y + position.y, 2));
-	buf[1].y = cos(angle) > 0 ? ceil(position->y) : floor(position->y);
-	buf[1].x = position->x + (cos(angle) > 0 ?
-		(position->y - floor(position->y)) :
-		(ceil(position->y) - position->y)) * tan(M_PI_2 - angle);
-	buf[1].d = sqrt(pow(buf[1].x + position.x, 2) +
-			pow(buf[0].y + position.y, 2));
-	position->x = buf[0].d < buf[1].d ? buf[0].x : buf[1].x;
-	position->y = buf[0].d < buf[1].d ? buf[0].y : buf[1].y;
-	position->d += buf[0].d < buf[1].d ? buf[0].d : buf[1].d;
-}
-
-static double	ray_cast(const t_player *player, int angle)
-{
-	t_player	rit;
-
-	rit = *player;
-	rit.d = 0;
-	step(&rit);
-	if ((rit.d = check_map_intersection(view, player, &rit)) == 0)
-		while (!check_point())
-		{
-			step(&rit);
-		}
-	return (rit.d);
+	i = -1;
+	not_draw = (WIN_HEIGHT - wall_h) / 2;
+	pixels = (int*)view->surface->pixels;
+	while (++i < WIN_HEIGHT)
+	{
+		if (i < not_draw || i > (wall_h + not_draw))
+			pixels[i * WIN_WIDTH + column] = 0;
+		else
+			pixels[i * WIN_WIDTH + column] = 0xff;
+	}
 }
 
 void			draw_surface(t_view *view)
 {
-	int		column;
-	double	angle;
-	double	distance;
+	int			column;
+	double		angle;
+	t_player	point;
+	int			wall_h;
+	double		delme;
 
 	column = 0;
 	while (column < WIN_WIDTH)
 	{
 		angle = atan2(((double)column) / WIN_WIDTH - 0.5, 0.2);
-		distance = ray_cast(view, &(view->player), angle);
+		point = ray_cast(view, angle);
+		delme = (point.d);
+		if (delme != 0)
+		    wall_h = (int)(WIN_HEIGHT * 0.5/ delme);
+		draw_column(view, wall_h, column);
 		column++;
 	}
 }
