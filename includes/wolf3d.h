@@ -72,7 +72,7 @@ typedef struct				s_view
 char						**get_map(const char *filename, size_t *h,
 	size_t *w);
 void						draw_surface(t_view *view);
-t_player					ray_cast(t_view *view, int angle);
+t_player					ray_cast(t_view *view, double angle);
 int							check_map_intersection(t_view *view,
 	t_player *player, t_player *rit);
 

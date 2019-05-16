@@ -59,6 +59,7 @@ static char	**convert_map(t_list **list, size_t *h, size_t *w)
 		i++;
 		iterator = iterator->next;
 	}
+	ft_lstdel(list, &do_nothing);
 	return (map);
 }
 
@@ -75,6 +76,7 @@ char		**get_map(const char *filename, size_t *h, size_t *w)
 		ft_lstadd(&list, ft_lstnew(buf, ft_strlen(buf) + 1));
 		free(buf);
 	}
+	free(buf);
 	close(map_fd);
 	return (convert_map(&list, h, w));
 }
