@@ -43,12 +43,10 @@ void			draw_surface(t_view *view)
 	{
 		angle = atan2(((double)column) / WIN_WIDTH - 0.5, 0.6);
 		point = ray_cast(view, angle + view->player->d);
-		delme = (point.d * cos(angle));
-		if (delme != 0)
-		{
-			wall_h = (int) (WIN_HEIGHT * 0.6 / delme);
-			draw_column(view, wall_h, column);
-		}
+		if (point.d <= 0 || cos(angle) == 0)
+			continue ;
+		wall_h = (int) (WIN_HEIGHT * 0.6 / (point.d * cos(angle)));
+		draw_column(view, wall_h, column);
 		column++;
 	}
 }

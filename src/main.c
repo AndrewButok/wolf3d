@@ -77,8 +77,8 @@ int			main(void)
 					event_iterator.window.event == SDL_WINDOWEVENT_CLOSE))
 				exit_flag = 1;
 			view->player->d += event_iterator.type != SDL_KEYDOWN ? 0 :
-					(event_iterator.key.keysym.sym == SDLK_d ? 0.017 * 6 :
-					 (event_iterator.key.keysym.sym == SDLK_a ? -0.017 * 6 : 0));
+					(event_iterator.key.keysym.sym == SDLK_d ? 0.017 * 3 :
+					 (event_iterator.key.keysym.sym == SDLK_a ? -0.017 * 3 : 0));
 			draw_surface(view);
 			SDL_UpdateWindowSurface(view->window);
 		}
