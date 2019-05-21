@@ -33,20 +33,26 @@ static void		draw_column(t_view *view, int wall_h, int column)
 void			draw_surface(t_view *view)
 {
 	int			column;
-	double		angle;
-	t_player	point;
-	int			wall_h;
-	double		delme;
+	t_vector	sp;
+	t_vector	screen;
+	double		d;
+	double		wall_h;
 
 	column = 0;
+	screen = get_perpendicular(view->direction);
 	while (column < WIN_WIDTH)
 	{
-		angle = atan2(((double)column) / WIN_WIDTH - 0.5, 0.6);
-		point = ray_cast(view, angle + view->player->d);
-		if (point.d <= 0 || cos(angle) == 0)
-			continue ;
-		wall_h = (int) (WIN_HEIGHT * 0.6 / (point.d * cos(angle)));
-		draw_column(view, wall_h, column);
+		d = (column - (WIN_WIDTH / 2.0)) / WIN_WIDTH;
+		sp.vector = (screen.vector * d * 2 * view->focal_distance *
+				tan(FOV * M_PI / 180)) - view->position.vector;
+		wall_h  = normalize(sp).y;
+		d = 0;
+		sp = ray_cast(view, &sp, &d);
+		if (d > 0 && wall_h != 0)
+		{
+			wall_h = (WIN_HEIGHT * 0.6 / (d * wall_h));
+			draw_column(view, (int)wall_h, column);
+		}
 		column++;
 	}
 }

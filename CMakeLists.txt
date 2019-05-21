@@ -16,9 +16,8 @@ set(SOURCE_FILES
         includes/wolf3d.h
         src/draw_surface.c
         src/main.c
-        src/map_intersection.c
         src/parse_map.c
-        src/ray_cast.c)
+        src/vector.c src/ray_cast.c src/map_intersection.c)
 
 add_executable(wolf3d ${SOURCE_FILES})
 target_link_libraries(wolf3d ft ${SDL})
