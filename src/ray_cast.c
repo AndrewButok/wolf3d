@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   draw_surface.c                                     :+:      :+:    :+:   */
+/*   ray_cast.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: abutok <abutok@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,65 +12,61 @@
 
 #include "wolf3d.h"
 
-static int 			is_drawable(t_view *view, t_vector *i, t_vector *v)
+static int			is_drawable(t_view *view, t_vector *i, t_vector *dir)
 {
-	int sign;
+	int	xs;
+	int	ys;
 
+	xs = (int)ceil(dir->x);
+	ys = (int)ceil(dir->y);
 	if (i->x == floor(i->x))
 	{
-		sign = v->x > 0 ? -1 : 1;
-		return (view->map[(int)floor(i->y)][(int)(i->x + sign)] == MAP_WALL ||
-				view->map[(int)floor(i->y)][(int)i->x] == MAP_WALL);
+		return (view->map[(int)(floor(i->y))][(int)(i->x + xs)] == MAP_WALL ||
+				view->map[(int)(floor(i->y))][(int)(i->x)] == MAP_WALL);
 	}
-	sign = v->y > 0 ? -1 : 1;
-	return (view->map[(int)(i->y + sign)][(int)floor(i->x)] == MAP_WALL ||
-			view->map[(int)i->y][(int)floor(i->x)] == MAP_WALL);
+	return (view->map[(int)(i->y + ys)][(int)(floor(i->x))] == MAP_WALL ||
+		view->map[(int)(i->y)][(int)(floor(i->x))] == MAP_WALL);
 }
 
-static int			check_point_accessory(t_view *view, t_vector *i)
+static void			step(t_vector *i, t_vector *direction, double *dist)
 {
-	return (i->x >= 0 && i->x <= view->map_width - 1 &&
-			i->y >= 0 && i->y <= view->map_height - 1);
+	t_vector	b[2];
+	double		n_dist[2];
+
+	b[0].x = direction->x > 0 ? floor(i->x + 1) : ceil(i->x - 1);
+	b[0].y = i->y + (direction->x > 0 ?
+						(i->x - b[0].x) :
+						(b[0].x - i->x)) * direction->x / direction->y;
+	n_dist[0] = pow(b[0].x - i->x, 2) +
+			pow(b[0].y - i->y, 2);
+	b[1].y = direction->y > 0 ? floor(i->y + 1) : ceil(i->y - 1);
+	b[1].x = i->x + (direction->y > 0 ?
+						(i->y - b[1].y) :
+						(b[1].y - i->y)) * direction->y / direction->x;
+	n_dist[1] = pow(b[1].x - i->x, 2) +
+			pow(b[1].y - i->y, 2);
+	i->x = n_dist[0] < n_dist[1] ? b[0].x : b[1].x;
+	i->y = n_dist[0] < n_dist[1] ? b[0].y : b[1].y;
+	*dist += sqrt((n_dist[0] < n_dist[1] ? n_dist[0] : n_dist[1]));
 }
 
-static void 		step(t_vector *position, t_vector *direction, double *d)
+static int			check_point_accesory(t_view *view, t_vector *point)
 {
-	t_vector	buf[2];
-	double		dd[2];
-
-	buf[0].x = direction->x > 0 ? floor(position->x + 1) :
-			ceil(position->x - 1);
-	buf[0].y = position->y + (direction->x > 0 ?
-			(position->x - buf[0].x) :
-			(buf[0].x - position->x)) * direction->x / direction->y;
-	dd[0] = pow(buf[0].x - position->x, 2) +
-			pow(buf[0].y - position->y, 2);
-	buf[1].y = direction->y > 0 ? floor(position->y + 1) :
-			ceil(position->y - 1);
-	buf[1].y = position->x + (direction->y > 0 ?
-			(position->y - buf[1].y) :
-			(buf[1].y - position->y)) * direction->y / direction->x;
-	dd[1] = pow(buf[1].x - position->x, 2) +
-			pow(buf[1].y - position->y, 2);
-	position->x = dd[0] < dd[1] ? buf[0].x : buf[1].x;
-	position->y = dd[0] < dd[1] ? buf[0].y : buf[1].y;
-	*d += sqrt((dd[0] < dd[1] ? dd[0] : dd[1]));
-
+	return (point->x >= 0 && point->x < view->map_width &&
+			point->y >= 0 && point->y < view->map_height);
 }
 
-t_vector			ray_cast(t_view *view, t_vector *direction, double *d)
+void				ray_cast(t_view *view, t_vector *direction, double *d)
 {
-	t_vector iterator;
+	t_vector	i;
 
-	iterator.vector = direction->vector + view->position.vector;
-	*direction = normalize(*direction);
-	//if ((*d = check_map_intersection(view, &iterator, direction)) == 0)
-		while (check_point_accessory(view, &iterator) &&
-			!is_drawable(view, &iterator, direction))
+	i = (*direction) * (*d) + view->position;
+	*d = 0;
+	if (((*d) = check_map_intersection(view, &i, direction)) == 0)
+		while (check_point_accesory(view, &i) &&
+			!is_drawable(view, &i, direction))
 		{
-			printf("k");
-			step(&iterator, direction, d);
+			step(&i, direction, d);
+			printf("%lf\n", d);
 		}
-	printf("%d\n", is_drawable(view, &iterator, direction));
-	return	iterator;
 }

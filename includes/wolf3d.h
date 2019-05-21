@@ -34,25 +34,14 @@
 /*
 **	Directions
 */
-#define DIRECTION_NORTH 'N'
-#define DIRECTION_SOUTH 'S'
-#define DIRECTION_WEST 'W'
-#define DIRECTION_EAST 'E'
+# define DIRECTION_NORTH 'N'
+# define DIRECTION_SOUTH 'S'
+# define DIRECTION_WEST 'W'
+# define DIRECTION_EAST 'E'
 
-typedef double			t_vec __attribute__((vector_size(sizeof(double) * 3)));
+typedef double		t_vector __attribute__((ext_vector_type(4)));
 
-typedef union			u_vector
-{
-	t_vec			vector;
-	struct
-	{
-		double	z;
-		double	y;
-		double	x;
-	};
-}						t_vector;
-
-typedef struct			s_view
+typedef struct		s_view
 {
 	SDL_Window		*window;
 	SDL_Surface		*surface;
@@ -62,21 +51,21 @@ typedef struct			s_view
 	t_vector		position;
 	t_vector		direction;
 	double			focal_distance;
-}						t_view;
+}					t_view;
 
-char					**get_map(const char *filename, size_t *h,
+char				**get_map(const char *filename, size_t *h,
 	size_t *w);
-void					draw_surface(t_view *view);
-t_vector				ray_cast(t_view *view, t_vector *direction, double *d);
-int						check_map_intersection(t_view *view,
+void				draw_surface(t_view *view);
+void				ray_cast(t_view *view, t_vector *direction, double *d);
+int					check_map_intersection(t_view *view,
 		t_vector *vo, t_vector *vv);
 
 /*
 **	Vector functions
 */
-double					dot(t_vector v1, t_vector v2);
-double					length(t_vector v);
-t_vector				normalize(t_vector v);
-t_vector				get_perpendicular(t_vector v);
+double				dot(t_vector v1, t_vector v2);
+double				length(t_vector v);
+t_vector			normalize(t_vector v);
+t_vector			perpendicular_2d(t_vector v);
 
 #endif

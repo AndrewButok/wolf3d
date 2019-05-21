@@ -32,10 +32,13 @@ void		level_init(char *level_name, t_view *view)
 		x = -1;
 		y = -1;
 	}
+	view->position = (t_vector){0};
+	view->direction = (t_vector){0};
 	view->position.x = (double)x + 0.5;
 	view->position.y = (double)y + 0.5;
 	view->direction.x = 1;
 	view->direction.y = 0;
+	view->focal_distance = 0.5;
 }
 
 static void	view_init(t_view **view_ptr)
@@ -76,9 +79,6 @@ int			main(void)
 				(event_iterator.type == SDL_WINDOWEVENT &&
 					event_iterator.window.event == SDL_WINDOWEVENT_CLOSE))
 				exit_flag = 1;
-//			view->player->d += event_iterator.type != SDL_KEYDOWN ? 0 :
-//					(event_iterator.key.keysym.sym == SDLK_d ? 0.017 * 3 :
-//					 (event_iterator.key.keysym.sym == SDLK_a ? -0.017 * 3 : 0));
 			draw_surface(view);
 			SDL_UpdateWindowSurface(view->window);
 		}

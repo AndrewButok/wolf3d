@@ -36,22 +36,22 @@ void			draw_surface(t_view *view)
 	t_vector	sp;
 	t_vector	screen;
 	double		d;
-	double		wall_h;
+	int			wall_h;
 
 	column = 0;
-	screen = get_perpendicular(view->direction);
+	screen = perpendicular_2d(view->direction);
 	while (column < WIN_WIDTH)
 	{
 		d = (column - (WIN_WIDTH / 2.0)) / WIN_WIDTH;
-		sp.vector = (screen.vector * d * 2 * view->focal_distance *
-				tan(FOV * M_PI / 180)) - view->position.vector;
-		wall_h  = normalize(sp).y;
-		d = 0;
-		sp = ray_cast(view, &sp, &d);
-		if (d > 0 && wall_h != 0)
+		sp = view->focal_distance * (view->direction + 2 * d * screen *
+				tan(FOV * M_PI / 180) / WIN_WIDTH);
+		d = length(sp);
+		sp = normalize(sp);
+		ray_cast(view, &sp, &d);
+		if (d > 0 && sp.y != 0)
 		{
-			wall_h = (WIN_HEIGHT * 0.6 / (d * wall_h));
-			draw_column(view, (int)wall_h, column);
+			wall_h = (int)(WIN_HEIGHT * 0.6 / (d * sp.y));
+			draw_column(view, wall_h, column);
 		}
 		column++;
 	}

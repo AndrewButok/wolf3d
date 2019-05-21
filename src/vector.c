@@ -24,13 +24,15 @@ double		length(t_vector v)
 
 t_vector	normalize(t_vector v)
 {
-	v.vector = v.vector / length(v);
+	v = v / length(v);
 	return (v);
 }
-t_vector	get_perpendicular(t_vector v)
+
+t_vector	perpendicular_2d(t_vector v)
 {
 	t_vector result;
 
+	result = (t_vector){0};
 	if (length(v) != 1)
 		v = normalize(v);
 	result.x = v.y;
