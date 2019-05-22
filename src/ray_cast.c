@@ -17,8 +17,8 @@ static int			is_drawable(t_view *view, t_vector *i, t_vector *dir)
 	int	xs;
 	int	ys;
 
-	xs = (int)ceil(dir->x);
-	ys = (int)ceil(dir->y);
+	xs = dir->x > 0 ? 1 : -1;
+	ys = dir->y > 0 ? 1 : -1;
 	if (i->x == floor(i->x))
 	{
 		return (view->map[(int)(floor(i->y))][(int)(i->x + xs)] == MAP_WALL ||
@@ -67,6 +67,5 @@ void				ray_cast(t_view *view, t_vector *direction, double *d)
 			!is_drawable(view, &i, direction))
 		{
 			step(&i, direction, d);
-			printf("%lf\n", d);
 		}
 }

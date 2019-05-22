@@ -50,7 +50,7 @@ void			draw_surface(t_view *view)
 		ray_cast(view, &sp, &d);
 		if (d > 0 && sp.y != 0)
 		{
-			wall_h = (int)(WIN_HEIGHT * 0.6 / (d * sp.y));
+			wall_h = (int)(WIN_HEIGHT * 0.1 / (d * sp.y));
 			draw_column(view, wall_h, column);
 		}
 		column++;
