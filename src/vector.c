@@ -35,7 +35,7 @@ t_vector	perpendicular_2d(t_vector v)
 	result = (t_vector){0};
 	if (length(v) != 1)
 		v = normalize(v);
-	result.x = v.y;
-	result.y = -v.x;
+	result.x = -v.y;
+	result.y = v.x;
 	return (result);
 }

@@ -56,9 +56,10 @@ typedef struct		s_view
 char				**get_map(const char *filename, size_t *h,
 	size_t *w);
 void				draw_surface(t_view *view);
-void				ray_cast(t_view *view, t_vector *direction, double *d);
+char				ray_cast(t_view *view, t_vector *direction, double *d);
 int					check_map_intersection(t_view *view,
 		t_vector *vo, t_vector *vv);
+void				move(t_view *view, SDL_Event *event);
 
 /*
 **	Vector functions

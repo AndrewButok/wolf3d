@@ -14,58 +14,91 @@
 
 static int			is_drawable(t_view *view, t_vector *i, t_vector *dir)
 {
-	int	xs;
-	int	ys;
+	int	x;
+	int y;
 
-	xs = dir->x > 0 ? 1 : -1;
-	ys = dir->y > 0 ? 1 : -1;
-	if (i->x == floor(i->x))
-	{
-		return (view->map[(int)(floor(i->y))][(int)(i->x + xs)] == MAP_WALL ||
-				view->map[(int)(floor(i->y))][(int)(i->x)] == MAP_WALL);
-	}
-	return (view->map[(int)(i->y + ys)][(int)(floor(i->x))] == MAP_WALL ||
-		view->map[(int)(i->y)][(int)(floor(i->x))] == MAP_WALL);
+	if (i->x != floor(i->x))
+		x = (int)floor(i->x);
+	else if (dir->x < 0)
+		x = (int)(i->x - 1);
+	else
+		x = (int)(i->x);
+	if (i->y != floor(i->y))
+		y = (int)floor(i->y);
+	else if (dir->y < 0)
+		y = (int)(i->y - 1);
+	else
+		y = (int)(i->y);
+	if (view->map[y][x] == MAP_WALL && i->x == x)
+		return (DIRECTION_SOUTH);
+	if (view->map[y][x] == MAP_WALL && i->x == x + 1)
+		return (DIRECTION_NORTH);
+	if (view->map[y][x] == MAP_WALL && i->y == y)
+		return (DIRECTION_WEST);
+	if (view->map[y][x] == MAP_WALL && i->y == y + 1)
+		return (DIRECTION_EAST);
+	return (-1);
 }
 
-static void			step(t_vector *i, t_vector *direction, double *dist)
+
+
+static t_vector		step(t_vector *i, t_vector *direction, char v)
 {
-	t_vector	b[2];
-	double		n_dist[2];
+	t_vector	vec;
 
-	b[0].x = direction->x > 0 ? floor(i->x + 1) : ceil(i->x - 1);
-	b[0].y = i->y + (direction->x > 0 ?
-						(i->x - b[0].x) :
-						(b[0].x - i->x)) * direction->x / direction->y;
-	n_dist[0] = pow(b[0].x - i->x, 2) +
-			pow(b[0].y - i->y, 2);
-	b[1].y = direction->y > 0 ? floor(i->y + 1) : ceil(i->y - 1);
-	b[1].x = i->x + (direction->y > 0 ?
-						(i->y - b[1].y) :
-						(b[1].y - i->y)) * direction->y / direction->x;
-	n_dist[1] = pow(b[1].x - i->x, 2) +
-			pow(b[1].y - i->y, 2);
-	i->x = n_dist[0] < n_dist[1] ? b[0].x : b[1].x;
-	i->y = n_dist[0] < n_dist[1] ? b[0].y : b[1].y;
-	*dist += sqrt((n_dist[0] < n_dist[1] ? n_dist[0] : n_dist[1]));
+	vec = 0;
+	if (v == 0 && direction->y != 0)
+	{
+		vec.x = ((direction->x > 0) ? floor(i->x + 1) : ceil(i->x - 1)) - i->x;
+		vec.y = vec.x * direction->x / direction->y;
+	}
+	if (v == 1 && direction->x != 0)
+	{
+		vec.y = ((direction->y > 0) ? floor(i->y + 1) : ceil(i->y - 1)) - i->y;
+		vec.x = vec.y * direction->y / direction->x;
+	}
+	return (vec);
 }
 
-static int			check_point_accesory(t_view *view, t_vector *point)
+static void			select_step(t_vector *i, t_vector *direction, double *dist)
+{
+	t_vector	dx;
+	t_vector	dy;
+
+	dx = step(i, direction, 0);
+	dy = step(i, direction, 1);
+	if ((dx.x == 0 && dx.y == 0) || length(dy) < length(dx))
+	{
+		*i += dy;
+		*dist += length(dy);
+	}
+	if ((dy.x == 0 && dy.y == 0) || length(dy) >= length(dx))
+	{
+		*i += dx;
+		*dist += length(dx);
+	}
+}
+
+static int			check_point_accessory(t_view *view, t_vector *point)
 {
 	return (point->x >= 0 && point->x < view->map_width &&
 			point->y >= 0 && point->y < view->map_height);
 }
 
-void				ray_cast(t_view *view, t_vector *direction, double *d)
+char				ray_cast(t_view *view, t_vector *direction, double *d)
 {
 	t_vector	i;
+	double		vector_length;
+	char		side;
 
-	i = (*direction) * (*d) + view->position;
+	vector_length = *d;
+	i = (*direction) * vector_length + view->position;
 	*d = 0;
+	side = 0;
 	if (((*d) = check_map_intersection(view, &i, direction)) == 0)
-		while (check_point_accesory(view, &i) &&
-			!is_drawable(view, &i, direction))
-		{
-			step(&i, direction, d);
-		}
+		while (check_point_accessory(view, &i) &&
+			(side = is_drawable(view, &i, direction)) == -1)
+			select_step(&i, direction, d);
+	*d *= vector_length;
+	return (side);
 }

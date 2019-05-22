@@ -38,7 +38,7 @@ void		level_init(char *level_name, t_view *view)
 	view->position.y = (double)y + 0.5;
 	view->direction.x = 1;
 	view->direction.y = 0;
-	view->focal_distance = 0.5;
+	view->focal_distance = 1;
 }
 
 static void	view_init(t_view **view_ptr)
@@ -79,6 +79,7 @@ int			main(void)
 				(event_iterator.type == SDL_WINDOWEVENT &&
 					event_iterator.window.event == SDL_WINDOWEVENT_CLOSE))
 				exit_flag = 1;
+			move(view, &event_iterator);
 			draw_surface(view);
 			SDL_UpdateWindowSurface(view->window);
 		}
